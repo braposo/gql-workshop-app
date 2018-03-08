@@ -29,36 +29,29 @@ exports.type = `
 const favorites = new Set();
 
 exports.resolvers = {
-  PosterSize: {
-    THUMB: 'w92',
-    SMALL: 'w185',
-    MEDIUM: 'w500',
-    LARGE: 'w780',
-    ORIGINAL: 'original'
-  },
-  Movie: {
-    posterPath: (root, {size = 'original'}) => {
-      return `https://image.tmdb.org/t/p/${size}${root.posterPath}`;
+    PosterSize: {
+        THUMB: "w92",
+        SMALL: "w185",
+        MEDIUM: "w500",
+        LARGE: "w780",
+        ORIGINAL: "original",
     },
-    backdropPath: root => {
-      return `https://image.tmdb.org/t/p/w1280${root.backdropPath}`;
-    }
-  },
-  Query: {
-    movies: (root, { page = 1 }, { axios }) => {
-      return axios
-        .get(
-          '3/discover/movie',
-          {
-            params: {
-              page
-            }
-          }
-        )
-        .then(res => res.data.results);
+    Movie: {
+        posterPath: (root, { size = "original" }) => {
+            return `https://image.tmdb.org/t/p/${size}${root.posterPath}`;
+        },
+        backdropPath: root => {
+            return `https://image.tmdb.org/t/p/w1280${root.backdropPath}`;
+        },
     },
-    movie: (root, { id }, { axios }) => {
-      return axios.get(`3/movie/${id}`).then(res => res.data);
-    }
-  }
+    Query: {
+        movies: (root, { page = 1 }, { loaders }) => {
+            return loaders.axiosLoader
+                .load(["3/discover/movie", { params: { page } }])
+                .then(res => res.data.results);
+        },
+        movie: (root, { id }, { loaders }) => {
+            return loaders.axiosLoader.load([`3/movie/${id}`]).then(res => res.data);
+        },
+    },
 };
