@@ -2,6 +2,7 @@ const { makeExecutableSchema } = require("graphql-tools");
 const mergeSchema = require("./types");
 const axios = require("./axios");
 const { GraphQLDate } = require("graphql-iso-date");
+const DataLoader = require("dataloader");
 
 const typeDefs = [
     `
@@ -26,19 +27,10 @@ module.exports = {
         return {
             axios,
             loaders: {
-                genres: (() => {
-                    let genresPromise;
-                    return () => {
-                        if (!genresPromise) {
-                            /* previous get genre logic here */
-                            genresPromise = axios
-                                .get("3/genre/movie/list")
-                                .then(res => res.data.genres);
-                        }
-
-                        return genresPromise;
-                    };
-                })(),
+                axiosLoader: new DataLoader(
+                    queries => Promise.all(queries.map(([url, params]) => axios.get(url, params))),
+                    { cacheKeyFn: query => JSON.stringify(query) }
+                ),
             },
         };
     },

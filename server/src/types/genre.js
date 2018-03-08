@@ -11,8 +11,11 @@ exports.type = `
 
 exports.resolvers = {
     Query: {
-        genre: (root, { id }, { axios, loaders }) => {
-            return loaders.genres().then(genres => genres.find(genre => genre.id === parseInt(id)));
+        genre: (root, { id }, { loaders }) => {
+            return loaders.axiosLoader
+                .load(["3/genre/movie/list"])
+                .then(res => res.data.genres)
+                .then(genres => genres.find(genre => genre.id === parseInt(id)));
         },
     },
 };
