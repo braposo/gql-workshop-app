@@ -24,6 +24,10 @@ exports.type = `
     movie(id: ID!): Movie
     movies(page: Int): [Movie!]!
   }
+
+  extend type Mutation {
+    addToFavorites(id: ID!): Movie
+  }
 `;
 
 const favorites = new Set();
@@ -51,6 +55,12 @@ exports.resolvers = {
                 .then(res => res.data.results);
         },
         movie: (root, { id }, { loaders }) => {
+            return loaders.axiosLoader.load([`3/movie/${id}`]).then(res => res.data);
+        },
+    },
+    Mutation: {
+        addToFavorites: (root, { id }, { loaders }) => {
+            favorites.add(id);
             return loaders.axiosLoader.load([`3/movie/${id}`]).then(res => res.data);
         },
     },

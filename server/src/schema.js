@@ -11,6 +11,10 @@ const typeDefs = [
   type Query {
     version: String!
   }
+
+  type Mutation {
+    noop: String
+  }
 `,
 ];
 
@@ -19,6 +23,9 @@ const resolvers = {
     Query: {
         version: () => "1",
     },
+    Mutation: {
+      noop: () => null,
+    }
 };
 
 module.exports = {
