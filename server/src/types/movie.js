@@ -42,12 +42,9 @@ exports.resolvers = {
         ORIGINAL: "original",
     },
     Movie: {
-        posterPath: (root, { size = "original" }) => {
-            return `https://image.tmdb.org/t/p/${size}${root.posterPath}`;
-        },
-        backdropPath: root => {
-            return `https://image.tmdb.org/t/p/w1280${root.backdropPath}`;
-        },
+        posterPath: ({ posterPath }, { size = "original" }) =>
+            `https://image.tmdb.org/t/p/${size}${posterPath}`,
+        backdropPath: ({ backdropPath }) => `https://image.tmdb.org/t/p/w1280${backdropPath}`,
         isFavorite: ({ id }) => favorites.has(`${id}`),
     },
     Query: {
