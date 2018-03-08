@@ -18,6 +18,7 @@ exports.type = `
     runtime: Int
     revenue: Int
     releaseDate: Date
+    isFavorite: Boolean!
   }
 
   extend type Query {
@@ -47,6 +48,7 @@ exports.resolvers = {
         backdropPath: root => {
             return `https://image.tmdb.org/t/p/w1280${root.backdropPath}`;
         },
+        isFavorite: ({ id }) => favorites.has(`${id}`),
     },
     Query: {
         movies: (root, { page = 1 }, { loaders }) => {
